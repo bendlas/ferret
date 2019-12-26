@@ -3,7 +3,7 @@
 #+TAGS: noexport(e)
 #+EXPORT_EXCLUDE_TAGS: noexport
 #+SETUPFILE: org-mode.conf
-#+OPTIONS: H:10 author:nil  
+#+OPTIONS: H:10 author:nil
 
 * Getting Started
 ** What Is Ferret
@@ -20,7 +20,7 @@ computers running Linux/Mac OS X/Windows.
    - Clang on Mac OS X
    - GCC & Clang on Linux
  - Microcontrollers
-   - Arduino 
+   - Arduino
      - Uno / Atmega328
      - Due / AT91SAM3X8E
      - 101 / Intel Curie
@@ -71,13 +71,13 @@ Supported package managers,
    https://ferret-lang.org/debian-repo ferret-lisp main" >> /etc/apt/sources.list
   apt-get update
   apt-get install ferret-lisp
-#+end_src 
+#+end_src
 
    - Clojars - https://clojars.org/ferret
 
 #+begin_src clojure :noweb yes :tangle no
   [ferret "<<ferret-version()>>"]
-#+end_src 
+#+end_src
 
 ** A glimpse of Ferret
 
@@ -118,7 +118,7 @@ variable on the resulting *cpp* file.
 #+END_EXAMPLE
 
 Following shows a blink example for Arduino. (See section [[Arduino
-Boards]] for more info on how to use Ferret lisp on Arduino boards.) 
+Boards]] for more info on how to use Ferret lisp on Arduino boards.)
 
 #+begin_src clojure :mkdirp yes :noweb yes :tangle test/arduino/blink/blink.clj
   ;;; blink.clj
@@ -229,7 +229,7 @@ currently supported microcontrollers.
 *** Arduino Boards
 
 Ferret standard library has built in support for Arduino library. *Any
-board* that Arduino IDE supports should work with Ferret lisp. 
+board* that Arduino IDE supports should work with Ferret lisp.
 
 *Post Arduino 1.5.0*, Ferret compiler can upload directly to a Arduino
 board by adding the following build command to the top of the file,
@@ -740,14 +740,14 @@ form.
           form (parser/drop form (parser/form? 'defmacro))
           temp-ns (gensym)
           macro-symbols (concat core-macro-symbols form-macro-symbols)]
-      
+
       (create-ns temp-ns)
       (binding [*ns* (the-ns temp-ns)]
         (refer 'clojure.core :exclude (concat macro-symbols ['fn 'def]))
         (use '[compiler.io :only [exit-failure]])
         (use '[compiler.core :only [symbol-conversion]])
         (use '[compiler.parser :only [new-fir-fn]])
-        
+
         (doseq [m (concat core-macros form-macros)]
           (eval m)))
 
@@ -807,7 +807,7 @@ after transformation becomes,
   (let [a 1
         a 3]
     (is (= 3 a)))
-  
+
   (let [a 1
         b 2]
     (is (= 3 (+ a b))))
@@ -933,7 +933,7 @@ constructor. Since every thing is already converted to fns this
 mechanism allows variables to be referenced down the line and solves
 the free variable problem.
 
-#+begin_src clojure :tangle no :noweb-ref core-compiler-transformations 
+#+begin_src clojure :tangle no :noweb-ref core-compiler-transformations
   (defn fn-defined? [fns env args body]
     (if-let [fn-name (@fns (concat [env args] body))]
       (apply list 'fir-fn-heap fn-name env)))
@@ -1818,7 +1818,7 @@ is supported.
 
     (let [a 1 b 2
           [c & r] (list 4 5)]
-      
+
       (is (= 1 a))
       (is (= 2 b))
       (is (= 4 c))
@@ -1827,7 +1827,7 @@ is supported.
     (let [[a & r] (list 1 2 3)
           rr (rest r)]
       (is (= (list 3) rr)))
-    
+
     (is (= (list 1 2 3) (destructure-test-5)))
     (is (= 3            (destructure-test-6)))
     (is (= (list 3 4)   (destructure-test-7 1 2 3 4)))
@@ -1839,7 +1839,7 @@ is supported.
       (is (= (list 1 2 3) all-list))
       (is (= 1            c))
       (is (= (list 1 2 3) other-list)))
-    
+
     (let [[_ _ a] (list 1 2 3)
           [_ b] (list 4 5 6)]
       (is (= 3 a))
@@ -1896,7 +1896,7 @@ is supported.
        (let [name (cond
                     (symbol? name)
                     (new-fn-arg name parent pos)
-                    
+
                     (parser/form? 'fir_destructure_associative name)
                     (let [[_ & args ] name
                           args (->> args
@@ -1905,7 +1905,7 @@ is supported.
                                     flatten
                                     (apply hash-map))]
                       (destructure-associative args parent pos))
-                    
+
                     (coll?   name)
                     (destructure-arguments name (destructure-nth parent pos)))]
          (conj h name))) [] args))
@@ -1975,7 +1975,7 @@ is supported.
                                 (emit-ast options body state)))
           env  (norm-fn-env env)
           vars (destructure-arguments args)]
-      (doseq [dec native-declarations] 
+      (doseq [dec native-declarations]
         (emit options dec state))
       {:name name :env env :args args :vars vars :body body}))
 
@@ -2028,7 +2028,7 @@ is supported.
         inline var $fn.name$::invoke (ref _args_) const {
           (void)(_args_);
           $fn.vars:{$it$;} ;separator=\"\n\"$
-     
+
           $fn.body:{$it$;} ;separator=\"\n\"$
         }
        };separator=\"\n\n\"$"
@@ -2119,7 +2119,7 @@ namespace.)
           // Program Run
           namespace $file${
            void main(){
-            $body:{$it$;} ;separator=\"\n\"$ 
+            $body:{$it$;} ;separator=\"\n\"$
            }
           }
 
@@ -2141,7 +2141,7 @@ namespace.)
 ** Main
 *** Options
 
-   Default compile options, 
+   Default compile options,
 
   #+begin_src clojure :noweb-ref core-compiler-main
     (defn compile-options [& [options]]
@@ -2204,13 +2204,13 @@ namespace.)
                                  (args :output)
                                  input)
               output-path      (io/file-path output)
-              output-extension (if (args :output) 
+              output-extension (if (args :output)
                                  (io/file-extension (args :output))
                                  io/extension-cpp)
               base-name        (io/file-base-name output)
               input-path       (io/file-path input)
               output-file      (io/make-file output-path base-name output-extension)
-              binary-file      (if (args :binary) 
+              binary-file      (if (args :binary)
                                  (args :binary)
                                  base-name)
               default-options  (compile-options-parse-source output-file)]
@@ -2321,12 +2321,12 @@ namespace.)
        (let [{:keys [input-file compile-program format-code path]} (spec-fn)]
          (info "dir =>" path)
          (info "file =>" input-file)
-         
+
          (compile->cpp (read-clojure-file input-file) (spec-fn))
-         
+
          (when format-code
            (clang-format (spec-fn)))
-         
+
          (when compile-program
            (compile->binary (spec-fn)))))
    #+end_src
@@ -2492,9 +2492,9 @@ All our types are derived from the base Object type. Which is a
   public:
     object_i() { }
     virtual ~object_i() { };
-    
+
     virtual type_t type() const = 0;
-    
+
   #if !defined(FERRET_DISABLE_STD_OUT)
     virtual void stream_console() const {
       rt::print("var#");
@@ -2502,7 +2502,7 @@ All our types are derived from the base Object type. Which is a
       rt::print(addr);
     }
   #endif
-    
+
     virtual bool equals(ref) const;
 
     virtual seekable_i* cast_seekable_i() { return nullptr; }
@@ -2536,7 +2536,7 @@ count, when it reaches zero it will automatically free the object.
     explicit inline var(object* o = nullptr) : obj(o) { inc_ref(); }
     inline var(ref o)   : obj(o.obj) { inc_ref(); }
     inline var(var&& o) : obj(o.detach()) { }
-      
+
     ~var() { dec_ref(); }
 
     inline var& operator=(var&& other){
@@ -2546,7 +2546,7 @@ count, when it reaches zero it will automatically free the object.
       }
       return *this;
     }
-    
+
     inline var& operator= (ref other){
       if (obj != other.obj){
         dec_ref();
@@ -2563,7 +2563,7 @@ count, when it reaches zero it will automatically free the object.
     bool operator!=(ref other) const { return !equals(other); }
 
     void* operator new(size_t, void* ptr){ return ptr; }
-    
+
     operator bool() const;
 
   #if !defined(FERRET_DISABLE_STD_OUT)
@@ -2574,9 +2574,9 @@ count, when it reaches zero it will automatically free the object.
         rt::print("nil");
     }
   #endif
-        
+
     inline object* get() const { return obj; }
-    
+
     template<typename T>
     inline T* cast() const { return static_cast<T*>((object*)obj); }
 
@@ -2594,14 +2594,14 @@ count, when it reaches zero it will automatically free the object.
       obj = nullptr;
       return _obj;
     }
-    
+
     inline void inc_ref(){
   #if !defined(FERRET_DISABLE_RC)
       // Only change if non-null
       if (obj) obj->inc_ref();
   #endif
     }
-      
+
     inline void dec_ref(){
   #if !defined(FERRET_DISABLE_RC)
       // Only change if non-null
@@ -2614,7 +2614,7 @@ count, when it reaches zero it will automatically free the object.
       }
   #endif
     }
-      
+
     pointer_t obj;
   };
 
@@ -2689,7 +2689,7 @@ traditional boolean values.
     }
   #endif
 
-    explicit boolean(bool b) : value(b) {} 
+    explicit boolean(bool b) : value(b) {}
 
     bool container() const {
       return value;
@@ -2722,7 +2722,7 @@ traditional boolean values.
         return false;
       else
         return get()->equals(other);
-    
+
     }else
       return false;
   }
@@ -2769,7 +2769,7 @@ A =pointer= object keeps a reference to a C++ pointer.
     }
 
     explicit pointer(void* p) : payload(p) {}
-    
+
     template<typename T> static T* to_pointer(ref v){
       return ((T *) v.cast<pointer>()->payload);
     }
@@ -2785,9 +2785,9 @@ modern C++ libraries that use smart pointers for memory management.
 #+begin_src clojure :tangle no :noweb-ref ferret-unit-test-objects
 (native-declare "class data{
                      int x;
-                   public: 
-                      
-                     explicit data(int _x) : x(_x) {} 
+                   public:
+
+                     explicit data(int _x) : x(_x) {}
 
                      int  content() { return x; }
                      void inc() { x++; }
@@ -2829,7 +2829,7 @@ public:
   type_t type() const final { return type_id<value>; }
 
   template <typename... Args>
-  explicit value(Args&&... args) : payload(static_cast<Args&&>(args)...) { } 
+  explicit value(Args&&... args) : payload(static_cast<Args&&>(args)...) { }
 
   T to_value() const {
     return payload;
@@ -2838,14 +2838,14 @@ public:
   static T to_value(ref v){
     return v.cast<value<T>>()->payload;
   }
-  
+
   T & to_reference() {
     return payload;
   }
-    
+
   static T & to_reference(ref v) {
     return v.cast<value<T>>()->to_reference();
-  }  
+  }
 };
 
 typedef value<matrix> matrix_t;
@@ -2879,7 +2879,7 @@ fixed point numbers. (See [[Numeric%20Tower][Numeric Tower]] runtime.)
     }
   #endif
 
-    template<typename T> explicit number(T x) : n(real_t(x)) {} 
+    template<typename T> explicit number(T x) : n(real_t(x)) {}
 
     template<typename T> static T to(ref v){
       return (T)v.cast<number>()->n;
@@ -2928,7 +2928,7 @@ directly. count is O(n). conj puts the item at the front of the list.
     }
 #endif
 
-    explicit sequence(ref d = nil(), ref n = nil()) : next(n), data(d) {} 
+    explicit sequence(ref d = nil(), ref n = nil()) : next(n), data(d) {}
 
     virtual seekable_i* cast_seekable_i() { return this; }
 
@@ -2957,15 +2957,15 @@ directly. count is O(n). conj puts the item at the front of the list.
   };
 
   namespace runtime {
-    inline var list() { 
+    inline var list() {
       return cached::empty_sequence_o;
     }
-    inline var list(ref v) { 
+    inline var list(ref v) {
       return obj<sequence>(v,cached::empty_sequence_o);
     }
-                      
+
     template <typename... Args>
-    inline var list(ref first, Args const & ... args) { 
+    inline var list(ref first, Args const & ... args) {
       return obj<sequence>(first, list(args...));
     }
   }
@@ -2973,14 +2973,14 @@ directly. count is O(n). conj puts the item at the front of the list.
   #ifdef FERRET_STD_LIB
   typedef ::std::vector<var>  std_vector;
 
-  template <> std_vector sequence::to(ref v) { 
+  template <> std_vector sequence::to(ref v) {
     std_vector ret;
     for_each(i, v)
       ret.push_back(i);
     return ret;
   }
 
-  template <> var sequence::from(std_vector v) { 
+  template <> var sequence::from(std_vector v) {
     var ret;
     std::vector<var>::reverse_iterator rit;
     // cppcheck-suppress postfixOperator
@@ -3058,7 +3058,7 @@ public:
         return rt::first(run(thunk));
     return data;
   }
-    
+
   var rest() final {
     lock_guard guard(lock);
     var tail;
@@ -3146,7 +3146,7 @@ public:
 #endif
 
   virtual seekable_i* cast_seekable_i() { return this; }
-  
+
   var cons(ref x) final {
     return obj<sequence>(x, var(this));
   }
@@ -3366,7 +3366,7 @@ A D-list is a cons of a list of keys and a list of values, i.e.:
 
       var new_keys;
       var new_values;
-      
+
       for_each(i, _keys){
         if ( i == k)
           continue;
@@ -3374,10 +3374,10 @@ A D-list is a cons of a list of keys and a list of values, i.e.:
         new_values = rt::cons(rt::first(_values), new_values);
         _values = rt::rest(_values);
       }
-        
+
       return rt::cons(new_keys,new_values);
     }
-    
+
    public:
 
     type_t type() const final { return type_id<d_list>; }
@@ -3390,7 +3390,7 @@ A D-list is a cons of a list of keys and a list of values, i.e.:
 
     explicit d_list() : data(rt::list(rt::list())) { }
     explicit d_list(ref l) : data(l) { }
-    
+
     var assoc(ref k, ref v) const {
       ref map = dissoc_aux(k);
       ref _keys = rt::first(map);
@@ -3403,7 +3403,7 @@ A D-list is a cons of a list of keys and a list of values, i.e.:
     var dissoc(ref k) const {
       return obj<d_list>(dissoc_aux(k));
     }
-    
+
     var val_at(ref args) const {
       ref key = rt::first(args);
       ref not_found = rt::first(rt::rest(args));
@@ -3417,11 +3417,11 @@ A D-list is a cons of a list of keys and a list of values, i.e.:
 
         _values = rt::rest(_values);
       }
-      
+
       if (!not_found.is_nil()){
         return not_found;
       }else{
-        return nil();  
+        return nil();
       }
     }
 
@@ -3433,24 +3433,24 @@ A D-list is a cons of a list of keys and a list of values, i.e.:
     var keys () const { return rt::first(data);}
 
     virtual seekable_i* cast_seekable_i() { return this; }
-    
+
     var cons(ref v) final {
       return rt::list(v,data);
     }
-    
+
     var first() final {
       ref _keys = rt::first(data);
       ref _values = rt::rest(data);
       return rt::list(rt::first(_keys),rt::first(_values));
     }
-    
+
     var rest() final {
       ref _keys = rt::first(data);
       ref _values = rt::rest(data);
 
       if(rt::rest(_keys).is_type(type_id<empty_sequence>))
         return rt::list();
-      
+
       return obj<d_list>(rt::cons(rt::rest(_keys),rt::rest(_values)));
     }
   };
@@ -3491,7 +3491,7 @@ class keyword final : public lambda_i {
   static constexpr number_t hash_key(const char * key){
     return *key ? (number_t)*key + hash_key(key + 1) : 0;
   }
-  
+
 public:
 
   type_t type() const final { return type_id<keyword>; }
@@ -3505,7 +3505,7 @@ public:
   }
 #endif
 
-  explicit keyword(number_t w) : hash(w) {} 
+  explicit keyword(number_t w) : hash(w) {}
   explicit keyword(const char * str): hash(hash_key(str)) { }
 
   var invoke(ref args) const final {
@@ -3608,7 +3608,7 @@ public:
   }
 #endif
 
-  explicit string() : data(rt::list()) {} 
+  explicit string() : data(rt::list()) {}
 
   explicit string(ref s) : data(s) {}
 
@@ -3750,7 +3750,7 @@ or =reset!=. Changes to atoms are always free of race conditions.
     }
   #endif
 
-    explicit atomic(ref d) : data(d) {} 
+    explicit atomic(ref d) : data(d) {}
 
     var swap(ref f, ref args){
       lock_guard guard(lock);
@@ -3763,7 +3763,7 @@ or =reset!=. Changes to atoms are always free of race conditions.
       data = newval;
       return data;
     }
-    
+
     var deref() final {
       lock_guard guard(lock);
       return data;
@@ -3841,11 +3841,11 @@ thread to =future=,
     inline var exec() {
       return run(fn);
     }
-    
+
     public:
 
     explicit async(ref f) :
-      cached(false), value(nil()), fn(f), 
+      cached(false), value(nil()), fn(f),
       task(std::async(std::launch::async, [this](){ return exec(); })){ }
 
     type_t type() const final { return type_id<async>; }
@@ -3921,13 +3921,13 @@ calls.
     mutex lock;
     var fn;
     var val;
-    
+
     public:
 
     type_t type() const final { return type_id<delayed>; }
 
-    explicit delayed(ref f) : fn(f) {} 
-    
+    explicit delayed(ref f) : fn(f) {}
+
     var deref() final {
       lock_guard guard(lock);
       if (!fn.is_nil()){
@@ -3987,7 +3987,7 @@ to iterate seekable containers.
 
         if (lf.is_nil() && rf.is_nil())
           return true;
-        
+
         if (lf != rf)
           return false;
       }
@@ -4065,11 +4065,11 @@ Implementations for the C++ Seekable API,
         seq = rt::rest(seq);
 
       if (seq.is_nil())
-        return rt::list(); 
+        return rt::list();
 
       return seq;
     }
-    
+
     inline size_t count(ref seq){
       size_t acc = 0;
 
@@ -4120,7 +4120,7 @@ Function invocation,
 #+begin_src c++ :tangle no :noweb-ref runtime-native-prototypes
   template<typename T, typename... Args>
   inline var run(T const & fn, Args const & ... args);
-        
+
   template<typename T>
   inline var run(T const & fn);
 
@@ -4164,14 +4164,14 @@ Function invocation,
 
           if (head.is_nil())
             return cached::empty_sequence_o;
-  
+
           if (head.cast<seekable_i>())
             return head;
 
           return rt::cons(head, (*this)(rt::rest(seq)));
         }
       } spread;
-      
+
       return f.cast<lambda_i>()->invoke(spread(argv));
     }
   }
@@ -4237,7 +4237,7 @@ array of =256= =size_t=s. By default page size is
 Memory pooling is intended for embedded systems where calling
 malloc/free is not desired.
 
-Steps for using *tcmalloc* on Mac OS X, install dependencies, 
+Steps for using *tcmalloc* on Mac OS X, install dependencies,
 
 #+BEGIN_EXAMPLE
   brew install google-perftools
@@ -4333,20 +4333,20 @@ parameterized. Thus, close to optimal performance will result.
       public:
 
         static void init(){ }
-        
+
         static inline void*  allocate(size_t s){
           return program_memory.allocate(s);
         }
 
         template<typename FT>
         static inline void* allocate(){ return allocate(sizeof(FT)); }
-        
+
         static inline void   free(void * ptr){ program_memory.free(ptr); }
       };
     }
   }
   #endif
-#+end_src 
+#+end_src
 
 Pool allocator uses circular first-fit strategy, when =allocate= is
 called the pool will scan the memory pool using the =used= bit array
@@ -4509,7 +4509,7 @@ int main() {
 When =FERRET_MEMORY_BOEHM_GC= is defined Ferret programs will use
 Boehm-Demers-Weiser's GC is a garbage collecting storage
 allocator. The collector automatically recycles memory when it
-determines that it can no longer be used. 
+determines that it can no longer be used.
 
 Code must be linked against the GC library. On most UNIX platforms,
 depending on how the collector is built, this will be gc.a or
@@ -4525,12 +4525,12 @@ libgc.{a,so}.
 
   namespace memory{
     namespace allocator{
-      
+
       class gc{
       public:
 
         static void init(){ GC_INIT(); }
-        
+
         static inline void* allocate(size_t s){
   #ifdef FERRET_DISABLE_MULTI_THREADING
           return GC_MALLOC(s);
@@ -4541,13 +4541,13 @@ libgc.{a,so}.
 
         template<typename FT>
         static inline void* allocate(){ return allocate(sizeof(FT)); }
-      
+
         static inline void  free(void * ptr){ }
       };
     }
   }
   #endif
-#+end_src 
+#+end_src
 
 **** System
 
@@ -4572,12 +4572,12 @@ allocator used.)
         template<typename FT>
         static inline void* allocate(){ return allocate(sizeof(FT)); }
 
-        static inline void  free(void * ptr){ ::free(ptr); } 
+        static inline void  free(void * ptr){ ::free(ptr); }
       };
     }
   }
   #endif
-#+end_src 
+#+end_src
 
 **** Synchronized
 
@@ -4607,7 +4607,7 @@ Synchronizes access to other allocators.
       };
     }
   }
-#+end_src 
+#+end_src
 
 Enable synchronized access,
 
@@ -4621,7 +4621,7 @@ Enable synchronized access,
     #endif
 
   #endif
-#+end_src 
+#+end_src
 
 **** Allocator API
 
@@ -4648,19 +4648,19 @@ used by including the header files.
     template<typename FT>
     static inline void* allocate(){ return allocate(sizeof(FT)); }
 
-    static inline void  free(void * ptr){ ::free(ptr); } 
+    static inline void  free(void * ptr){ ::free(ptr); }
   };
 
   bool allocator_user::loaded = false;
 
   #define FERRET_ALLOCATOR allocator_user
-#+end_src 
+#+end_src
 
 #+begin_src clojure :mkdirp yes :tangle test/core/allocator_api.clj
   (native-header "allocator_user.h")
 
   (assert (cxx "__result = obj<boolean>(allocator_user::loaded)"))
-#+end_src 
+#+end_src
 
 Helper functions for user defined allocators.
 
@@ -4674,10 +4674,10 @@ Helper functions for user defined allocators.
     size_t align_of(const void * ptr) {
       return align_of(reinterpret_cast<uintptr_t>(ptr), sizeof(T));
     }
-      
+
     inline size_t align_req(uintptr_t size, size_t align){
       size_t adjust = align - (size & (align - 1));
-        
+
       if(adjust == align)
         return 0;
       return adjust;
@@ -4693,7 +4693,7 @@ Helper functions for user defined allocators.
       return rt::max(sizeof(Ts)...);
     }
   }
-#+end_src 
+#+end_src
 
 **** Alloca
 
@@ -4708,9 +4708,9 @@ template<typename T>
 class alloca {
 
   byte memory [sizeof(T)];
-  
+
 public:
-  
+
   template<typename... Args>
   inline explicit alloca(Args... args) {
     (new(memory) T(args...))->inc_ref();
@@ -4741,11 +4741,11 @@ counting policies.
   #if !defined(FERRET_RC_TYPE)
     #define FERRET_RC_TYPE unsigned int
   #endif
-      
+
   #if defined(FERRET_DISABLE_RC)
 
   #define FERRET_RC_POLICY memory::gc::no_rc
-      
+
       class no_rc{
       public:
 
@@ -4762,15 +4762,15 @@ counting policies.
 
         inline void inc_ref() { ref_count++; }
         inline bool dec_ref() { return (--ref_count == 0); }
-      
+
       private:
         T ref_count;
-      };    
+      };
 
       #if defined(FERRET_DISABLE_MULTI_THREADING) || !defined(FERRET_STD_LIB)
         #define FERRET_RC_POLICY memory::gc::rc<FERRET_RC_TYPE>
       #endif
-      
+
       #if defined(FERRET_STD_LIB) && !defined(FERRET_DISABLE_MULTI_THREADING)
         #define FERRET_RC_POLICY memory::gc::rc<::std::atomic<FERRET_RC_TYPE>>
       #endif
@@ -4778,7 +4778,7 @@ counting policies.
     }
   }
   #endif
-#+end_src 
+#+end_src
 
 ** Numeric Tower
 
@@ -4829,7 +4829,7 @@ Math functions.
     static constexpr T max(T a, Ts... bs) {
       return max(a, max(bs...));
     }
-    
+
     template<typename T>
     constexpr T min(T a, T b){
       return ((a) < (b) ? (a) : (b));
@@ -4897,7 +4897,7 @@ accuracy using 6 bits for fraction.
   int main() {
     typedef ferret::fixed_real<32,8> fix_32;
     typedef ferret::fixed_real<64,8> fix_64;
-    
+
     // Test Casting
     assert((char)          fix_32(char(25))  == char(25));
     assert((int)           fix_32(int(1024)) == int(1024));
@@ -4986,7 +4986,7 @@ accuracy using 6 bits for fraction.
 
     template<typename T>
     inline T to_whole() const { return (T)(m >> N); }
-      
+
   public:
 
     //from types
@@ -4996,12 +4996,12 @@ accuracy using 6 bits for fraction.
 
     template<typename T>
     fixed& operator=(T v)        { m = from<T>(v); return *this; }
-      
+
     //to types
     template<typename T>
     operator T()           const { return to_whole<T>();    }
     operator double()      const { return to_rational<double>(); }
-      
+
     // operations
     fixed& operator+= (const fixed& x) { m += x.m; return *this; }
     fixed& operator-= (const fixed& x) { m -= x.m; return *this; }
@@ -5010,13 +5010,13 @@ accuracy using 6 bits for fraction.
     fixed& operator*= (int x)          { m *= x; return *this; }
     fixed& operator/= (int x)          { m /= x; return *this; }
     fixed  operator-  ( )              { return fixed(-m); }
-      
+
     // friend functions
     friend fixed operator+ (fixed x, const fixed& y) { return x += y; }
     friend fixed operator- (fixed x, const fixed& y) { return x -= y; }
     friend fixed operator* (fixed x, const fixed& y) { return x *= y; }
     friend fixed operator/ (fixed x, const fixed& y) { return x /= y; }
-      
+
     // comparison operators
     friend bool operator== (const fixed& x, const fixed& y) { return x.m == y.m; }
     friend bool operator!= (const fixed& x, const fixed& y) { return x.m != y.m; }
@@ -5045,7 +5045,7 @@ A matrix is a two-dimensional array often used for linear algebra.
 
 int main() {
   using namespace ferret;
-    
+
   //initializers
   assert((matrix::zeros(2,2)  == matrix::into<2,2>(0,0,0,0)));
   assert((matrix::ones(2,2)   == matrix::into<2,2>(1,1,1,1)));
@@ -5190,7 +5190,7 @@ public:
     for(size_t i = 0; i < m.data.size(); i++)
       m.data[i] = val;
   }
-  
+
   inline static matrix zeros(size_t r = 0, size_t c = 0) {
     matrix m(r,c);
     fill(m, real_t(0));
@@ -5266,11 +5266,11 @@ Math related string literals.
   constexpr auto operator "" _MB( unsigned long long const x ) -> long {
     return 1024L * 1024L * (long)x;
   }
-    
+
   constexpr auto operator "" _KB( unsigned long long const x ) -> long {
     return 1024L * (long)x;
   }
-    
+
   constexpr auto operator "" _pi(long double x) -> double {
     return 3.14159265358979323846 * (double)x;
   }
@@ -5449,13 +5449,13 @@ provides its own types that are portable across architectures.
 
     // cppcheck-suppress useStlAlgorithm
     for (int& x : numbers) { x++; }
-   
+
     assert((numbers[0] == 2));
     assert((numbers[1] == 3));
     assert((numbers[2] == 4));
     assert((numbers[3] == 5));
     assert((numbers[4] == 6));
-    
+
     return 0;
   }
 #+end_src
@@ -5484,7 +5484,7 @@ public:
     _size(source.size()) {
     data = (T *)FERRET_ALLOCATOR::allocate(_size * sizeof(T));
     size_t idx = 0;
-    for(auto item : source){  
+    for(auto item : source){
       data[idx] = item;
       idx++;
     }
@@ -5498,7 +5498,7 @@ public:
     for(size_t i = 0; i < _size; i++)
       data[i] = m.data[i];
   }
-  
+
   ~array(){
     FERRET_ALLOCATOR::free(data);
   }
@@ -5532,7 +5532,7 @@ int main() {
   using namespace ferret;
 
   assert(FERRET_BITSET_USE_COMPILER_INTRINSICS == true);
-  
+
   bitset<32> bs_a;
   assert(32 == bs_a.ffs(0));
   for(size_t i = 0; i < 2; i++)  bs_a.set(i);
@@ -5707,9 +5707,9 @@ public:
 
       // mask off bits below bound
       this_word &= (~static_cast<word_t>(0)) << bit(b);
-      
+
       if (this_word != static_cast<word_t>(0))
-	return ((word_ptr * bits_per_word) + (size_t) __builtin_ctz(this_word));
+        return ((word_ptr * bits_per_word) + (size_t) __builtin_ctz(this_word));
 
       // check subsequent words
       word_ptr++;
@@ -5734,9 +5734,9 @@ public:
       word_t this_word = ~bits[word_ptr];
 
       this_word &= (~static_cast<word_t>(0)) << bit(b);
-      
+
       if (this_word != static_cast<word_t>(0))
-	return ((word_ptr * bits_per_word) + (size_t) __builtin_ctz(this_word));
+        return ((word_ptr * bits_per_word) + (size_t) __builtin_ctz(this_word));
 
       word_ptr++;
       size_t last_word = (word(e) == n_words) ? n_words : word(e) + 1;
@@ -5783,15 +5783,15 @@ not defined.)
   #if defined(FERRET_DISABLE_MULTI_THREADING)
     class mutex {
     public:
-      void lock()   {} 
-      void unlock() {} 
+      void lock()   {}
+      void unlock() {}
     };
   #else
     #if defined(FERRET_STD_LIB)
       class mutex {
         ::std::mutex m;
       public:
-        void lock()   { m.lock();   } 
+        void lock()   { m.lock();   }
         void unlock() { m.unlock(); }
       };
     #endif
@@ -5799,7 +5799,7 @@ not defined.)
     #if defined(FERRET_HARDWARE_ARDUINO)
       class mutex {
       public:
-        void lock()   { noInterrupts(); } 
+        void lock()   { noInterrupts(); }
         void unlock() { interrupts();   }
       };
     #endif
@@ -5830,11 +5830,11 @@ indicating platform.
       defined(__linux__) ||                         \
       defined(__unix__) ||                          \
       defined(_POSIX_VERSION)
-    
+
       # undef  FERRET_CONFIG_SAFE_MODE
       # define FERRET_STD_LIB TRUE
     #endif
-    
+
     #if defined(ARDUINO)
 
       # define FERRET_HARDWARE_ARDUINO TRUE
@@ -5843,7 +5843,7 @@ indicating platform.
         # define FERRET_HARDWARE_ARDUINO_UART_PORT Serial
       #endif
     #endif
-    
+
     #if defined(FERRET_HARDWARE_ARDUINO)
       # undef  FERRET_CONFIG_SAFE_MODE
       # define FERRET_DISABLE_STD_MAIN TRUE
@@ -5916,7 +5916,7 @@ Setup dummy IO,
   #if defined(FERRET_DISABLE_STD_OUT)
      namespace runtime{
        void init(){ }
-      
+
        template <typename T>
        void print(T){ }
      }
@@ -5929,7 +5929,7 @@ Setup IO for general purpose OS,
   #if defined(FERRET_STD_LIB) && !defined(FERRET_DISABLE_STD_OUT)
     namespace runtime{
       void init(){}
-      
+
       template <typename T>
       void print(const T & t){ std::cout << t; }
 
@@ -5948,7 +5948,7 @@ Setup IO for general purpose OS,
 Setup IO for Arduino boards,
 
 #+begin_src c++ :tangle no :noweb-ref runtime-native-hardware-initialize
-  #if defined(FERRET_HARDWARE_ARDUINO) && !defined(FERRET_DISABLE_STD_OUT) 
+  #if defined(FERRET_HARDWARE_ARDUINO) && !defined(FERRET_DISABLE_STD_OUT)
     namespace runtime{
       void init(){ FERRET_HARDWARE_ARDUINO_UART_PORT.begin(FERRET_UART_RATE); }
 
@@ -5960,7 +5960,7 @@ Setup IO for Arduino boards,
       void print(const real_t d){
         FERRET_HARDWARE_ARDUINO_UART_PORT.print(double(d), real_precision);
       }
-      
+
       template <>
       void print(void *p){
         FERRET_HARDWARE_ARDUINO_UART_PORT.print((size_t)p,HEX);
@@ -6016,7 +6016,7 @@ right after =program::main()=.
    #else
     int main(int argc, char* argv[])
    #endif
-    {     
+    {
       using namespace ferret;
       FERRET_ALLOCATOR::init();
       rt::init();
@@ -6031,7 +6031,7 @@ right after =program::main()=.
      #if defined(FERRET_PROGRAM_MAIN)
       run(FERRET_PROGRAM_MAIN);
      #endif
-       
+
       return 0;
     }
   #endif
@@ -6039,7 +6039,7 @@ right after =program::main()=.
 
 When a supported Arduino board is [[Detect Hardware][detected]]. Instead of using a
 standard =main= function, Ferret uses Arduino compatible boot
-procedure. 
+procedure.
 
 #+begin_src c++ :tangle no :noweb-ref runtime-native-program-arduino
   #if defined(FERRET_HARDWARE_ARDUINO)
@@ -6057,7 +6057,7 @@ procedure.
       using namespace ferret;
       #if !defined(FERRET_PROGRAM_MAIN)
         $file$::main();
-      #endif          
+      #endif
 
       #if defined(FERRET_PROGRAM_MAIN)
         run(FERRET_PROGRAM_MAIN);
@@ -6068,7 +6068,7 @@ procedure.
 
 ** Configuration
 
-Ferret defaults to running in safe mode, which means 
+Ferret defaults to running in safe mode, which means
 
   - Multi threading is disabled.
   - Console output is disabled.
@@ -6128,7 +6128,7 @@ Top level statements can be declared using,
 #+end_src
 
 Ferret objects can be created using the =obj= function. If a function
-only contains a string such as, 
+only contains a string such as,
 
 #+begin_src clojure :noweb-ref ferret-unit-tests
   (defn inc-int [] "__result =  obj<number>(i++);")
@@ -6474,7 +6474,7 @@ Tests if 2 arguments are the same object.
                  1 -1)))
   (is (= -1    (if (zero? 1)
                  1 -1)))
-  
+
   (is (= 2     (if nil
                  1 2))))
 #+end_src
@@ -6535,13 +6535,13 @@ side-effect will cause =test= to become =false/nil=. Returns =nil=.
 *** while-let
 
 Repeatedly executes body while test expression is true, evaluating the
-body with binding-form bound to the value of test. 
+body with binding-form bound to the value of test.
 
 #+begin_src clojure :noweb-ref ferret-unit-tests
 (deftest while-let-test
   (let [lst (atom (list 1 2 3 4 5))
         acc (atom )]
-    
+
     (while-let [item (first @lst)]
       (swap! lst rest)
       (swap! acc conj item))
@@ -6916,7 +6916,7 @@ the coll, until the colls is exhausted.
   (is (= 3   (->> (map inc (list 1 2 3))
                   (take 20)
                   (count))))
-  
+
 
   (= (list 1 1 2 3 5) (take 5 (fib-seq)))
   (= 12               (apply + (take 5 (fib-seq)))))
@@ -7075,7 +7075,7 @@ returns logical =true=.
   (is (= 2  (->> (list true false true false false)
                  (filter true?)
                  (count ))))
-  
+
   (is (= 2  (->> (list true false true false)
                  (filter true?)
                  (count ))))
@@ -7115,11 +7115,11 @@ returns logical =true=.
   (is (= 3 (count (repeatedly 3 (fn [] 1)))))
 
   (is (= 3 (count (lazy-seq-cache (repeatedly 3 (fn [] 1))))))
-  
+
   (is (= 2 (->> (repeatedly 3 (fn [] 1))
                 (map inc)
                 first)))
-  
+
   (is (= 2 (->> (repeatedly (fn [] 1))
                 (take 3)
                 (map inc)
@@ -7465,10 +7465,10 @@ Returns the greatest of the nums.
 #+end_src
 
 #+begin_src clojure :tangle no :noweb yes :noweb-ref runtime-clojure-math
-  (defn mod [num div] 
-    (let [m (rem num div)] 
+  (defn mod [num div]
+    (let [m (rem num div)]
       (if (or (zero? m) (= (pos? num) (pos? div)))
-        m 
+        m
         (+ m div))))
 #+end_src
 
@@ -7665,7 +7665,7 @@ Override =len= bits in =dst= starting from =pos= using bits from =src=.
 Split a number into bytes.
 
 #+begin_src clojure :tangle no :noweb yes :noweb-ref runtime-clojure-math
-  (defn encode-int16 [n] 
+  (defn encode-int16 [n]
     "int16_t val = number::to<int16_t>(n);
      byte *p = (byte*)&val;
      for (int i = (sizeof(int16_t) -1); i >= 0; i--)
@@ -7677,7 +7677,7 @@ Combine a list of bytes to a number.
 #+begin_src clojure :tangle no :noweb yes :noweb-ref runtime-clojure-math
   (defn decode-int16 [s]
     "int16_t val = 0;
-     byte *p = (byte*)&val; 
+     byte *p = (byte*)&val;
 
      size_t index = 0;
      for_each(i, s){
@@ -7701,7 +7701,7 @@ Combine a list of bytes to a number.
 #+end_src
 
 #+begin_src clojure :tangle no :noweb yes :noweb-ref runtime-clojure-math
-  (defn encode-float [n] 
+  (defn encode-float [n]
     "static_assert(sizeof(float) == 4 * sizeof(byte), \"\");
      float val = number::to<float>(n);
      byte *p = (byte*)&val;
@@ -8173,7 +8173,7 @@ Port of Teensy elapsedMicros API,
       return (unsigned long)::std::chrono::duration_cast<::std::chrono::microseconds>(epoch).count();
     }
   #endif
-    
+
    public:
 
     elapsed_micros(void) { us = now(); }
@@ -8182,7 +8182,7 @@ Port of Teensy elapsedMicros API,
       lock_guard guard(lock);
       us = now();
     }
-    
+
     type_t type() const { return type_id<elapsed_micros>; }
 
   #if !defined(FERRET_DISABLE_STD_OUT)
@@ -8272,7 +8272,7 @@ statistics.
 
 ;; Ping console every second
 (forever
- (throttled-ping))    
+ (throttled-ping))
 #+end_src
 
 #+begin_src clojure :tangle no :noweb-ref ferret-unit-test-time
@@ -8334,7 +8334,7 @@ class fn_throttler : public lambda_i {
     ::std::this_thread::sleep_for(duration);
   }
 #endif
-  
+
   var exec(ref args){
     if (blocking)
       _wait(rate - timer.elapsed());
@@ -8343,10 +8343,10 @@ class fn_throttler : public lambda_i {
       timer.reset();
       return rt::apply(fn, args);
     }
-    
+
     return nil();
   }
-  
+
 public:
 
   explicit fn_throttler(var f, real_t r, bool b) : fn(f), rate(r), blocking (b) { }
@@ -8409,7 +8409,7 @@ and returns its value as a Ferret =number=.
          value = value * real_t(10.0) + real_t(d);
        }
      }
-    
+
      return obj<number>(value * factor);")
 #+end_src
 
@@ -8484,8 +8484,8 @@ Returns a =lazy-seq= of tokens in =str= separated by =delimeter=.
          }
        };
 
-       char* token = strtok(string::c_str(packed_str), 
-                            string::c_str(packed_delimeter)); 
+       char* token = strtok(string::c_str(packed_str),
+                            string::c_str(packed_delimeter));
 
        if (token != nullptr)
          return obj<lazy_sequence>(obj<string>(token),
@@ -8535,7 +8535,7 @@ and then dispatches on the number of arguments to each implementation.
                      ([]    0)
                      ([x]   1)
                      ([x y] 2)))]
-    
+
     (is (= true  (= f1 f1)))
     (is (= false (= f1 f2)))
 
@@ -8802,7 +8802,7 @@ Reads the next line from default I/O stream.
     (on "defined FERRET_STD_LIB"
         ("memory")
         "::std::shared_ptr<FILE> pipe(popen(cmd, \"r\"), pclose);
-         if (!pipe) 
+         if (!pipe)
            return nil();
          char buffer[128];
          ::std::string result = \"\";
@@ -9039,7 +9039,7 @@ other members of the group and port.
 
   (defn send [con data]
     "datagram_t buffer(max_data_gram_size);
-     size_t idx = 0; 
+     size_t idx = 0;
 
      for_each(b, data)
       buffer[idx++] = (byte)number::to<number_t>(b);
@@ -9075,84 +9075,84 @@ other members of the group and port.
     class address{
       sockaddr addr;
       socklen_t addr_len;
-   
+
     public:
       address(){
         memset(&addr, 0, sizeof(addr));
         addr_len = 0;
       }
-    
+
       address(const char *hostname, unsigned short port){
         set_host(hostname, port);
       }
-    
+
       address(const address &src){ copy(src); }
-    
+
       ~address() { reset(); }
-   
+
       bool set_host(const char *hostname, unsigned short port);
       void set_any(unsigned short port = 0);
-   
+
       bool operator==(const address &a) const{
         return addr_len == a.addr_len && memcmp(&addr, &a.addr, addr_len) == 0;
       }
-    
+
       void copy(const address &src){
         memcpy(&addr, &src.addr, src.addr_len);
         addr_len = src.addr_len;
       }
-    
+
       void reset(){
         memset(&addr, 0, sizeof(addr));
         addr_len = 0;
       }
-    
+
       void clear(){
         reset();
       }
-   
+
       in_addr_t get_in_addr() const;
-   
+
       friend class udp;
     };
 
     class udp{
       int fd;
-   
+
     public:
       unsigned sent_packets;
       size_t sent_bytes;
       unsigned recv_packets;
       size_t recv_bytes;
-   
+
     public:
       udp() : fd(-1) { close(); }
       ~udp(){ close(); }
-   
+
       bool open(const char *server_host, unsigned short port, bool blocking);
       bool add_multicast(const address &multiaddr, const address &interface);
       void close();
       bool is_open() const{ return fd >= 0; }
-   
+
       bool send(const void *data, size_t length, const address &dest);
       ssize_t recv(address &src, datagram_t & recv_buf);
-   
+
       bool wait(int timeout_ms = -1) const;
       bool have_pending_data() const;
     };
-   
+
     bool address::set_host(const char *hostname, unsigned short port){
       addrinfo *res = nullptr;
       getaddrinfo(hostname, nullptr, nullptr, &res);
       if (res == nullptr) {
         return false;
       }
-   
+
       memset(&addr, 0, sizeof(addr));
       addr_len = res->ai_addrlen;
       memcpy(&addr, res->ai_addr, addr_len);
       freeaddrinfo(res);
-   
+
       // set port for internet sockets
       sockaddr_in *sockname = reinterpret_cast<sockaddr_in *>(&addr);
       if (sockname->sin_family == AF_INET) {
@@ -9161,10 +9161,10 @@ other members of the group and port.
       else {
         // TODO: any way to set port in general?
       }
-   
+
       return true;
     }
-   
+
     void address::set_any(unsigned short port){
       memset(&addr, 0, sizeof(addr));
       sockaddr_in *s = reinterpret_cast<sockaddr_in *>(&addr);
@@ -9172,39 +9172,39 @@ other members of the group and port.
       s->sin_port = htons(port);
       addr_len = sizeof(sockaddr_in);
     }
-   
+
     in_addr_t address::get_in_addr() const{
       const sockaddr_in *s = reinterpret_cast<const sockaddr_in *>(&addr);
       return s->sin_addr.s_addr;
     }
-   
+
     bool udp::open(const char *server_host, unsigned short port, bool blocking){
       // open the socket
       if (fd >= 0) {
         ::close(fd);
       }
       fd = socket(PF_INET, SOCK_DGRAM, 0);
-   
+
       // set socket as non-blocking
       int flags = fcntl(fd, F_GETFL, 0);
       if (flags < 0) {
         flags = 0;
       }
       fcntl(fd, F_SETFL, flags | (blocking ? 0 : O_NONBLOCK));
-   
+
       int reuse = 1;
       if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char *>(&reuse), sizeof(reuse)) != 0) {
         fprintf(stderr, "ERROR WHEN SETTING SO_REUSEADDR ON udp SOCKET\n");
         fflush(stderr);
       }
-   
+
       int yes = 1;
       // allow packets to be received on this host
       if (setsockopt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, reinterpret_cast<const char *>(&yes), sizeof(yes)) != 0) {
         fprintf(stderr, "ERROR WHEN SETTING IP_MULTICAST_LOOP ON udp SOCKET\n");
         fflush(stderr);
       }
-   
+
       // bind socket to port if nonzero
       if (port != 0) {
         sockaddr_in sockname;
@@ -9213,64 +9213,64 @@ other members of the group and port.
         sockname.sin_port = htons(port);
         bind(fd, reinterpret_cast<struct sockaddr *>(&sockname), sizeof(sockname));
       }
-   
+
       // add udp multicast groups
       address multiaddr, interface;
       multiaddr.set_host(server_host, port);
       interface.set_any();
-   
+
       return add_multicast(multiaddr, interface);
     }
-   
+
     bool udp::add_multicast(const address &multiaddr, const address &interface){
       struct ip_mreq imreq;
       imreq.imr_multiaddr.s_addr = multiaddr.get_in_addr();
       imreq.imr_interface.s_addr = interface.get_in_addr();
-   
+
       int ret = setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &imreq, sizeof(imreq));
-   
+
       return ret == 0;
     }
-   
+
     void udp::close(){
       if (fd >= 0) {
         ::close(fd);
       }
       fd = -1;
-   
+
       sent_packets = 0;
       sent_bytes = 0;
       recv_packets = 0;
       recv_bytes = 0;
     }
-   
+
     bool udp::send(const void *data, size_t length, const address &dest){
       ssize_t len = sendto(fd, data, length, 0, &dest.addr, dest.addr_len);
-      
+
       if (len > 0) {
         sent_packets++;
         sent_bytes += (size_t)len;
       }
-   
+
       return (len >= 0 && (size_t)len == length);
     }
 
     ssize_t udp::recv(address &src, datagram_t & recv_buf){
       src.addr_len = sizeof(src.addr);
       ssize_t len = recvfrom(fd, recv_buf.data, max_data_gram_size, 0, &src.addr, &src.addr_len);
-   
+
       if (len > 0) {
         recv_packets++;
         recv_bytes += (size_t)len;
       }
-   
+
       return len;
     }
-   
+
     bool udp::have_pending_data() const{
       return wait(0);
     }
-   
+
     bool udp::wait(int timeout_ms) const{
       static const bool debug = false;
       static bool pendingData = false;
@@ -9278,9 +9278,9 @@ other members of the group and port.
       pfd.fd = fd;
       pfd.events = POLLIN;
       pfd.revents = 0;
-   
+
       bool success = (poll(&pfd, 1, timeout_ms) > 0);
-   
+
       if (!success) {
         // Poll now claims that there is no pending data.
         // What did have_pending_data get from Poll most recently?
@@ -9298,7 +9298,7 @@ other members of the group and port.
     unsigned short port;
     multicast_aux::udp net;
     mutex lock;
-    
+
   public:
 
     type_t type() const final { return type_id<multicast_socket>; }
@@ -9367,7 +9367,7 @@ Once opened, port is ready for =read=/=write=.
       (serial/write dev byte))
 
     (sleep 100)
-    
+
     (let [data-in (repeatedly 3 #(serial/read dev))]
       (assert (= data-in data-out))))
 #+end_src
@@ -9393,7 +9393,7 @@ Once opened, port is ready for =read=/=write=.
        }else{
 
        speed_t rate = B9600;
-    
+
        switch (number::to<number_t>(speed)) {
            case 9600:
                rate = B9600;
@@ -9449,7 +9449,7 @@ Once opened, port is ready for =read=/=write=.
            case 4000000:
                rate = B4000000;
                break;
-           default: 
+           default:
                return nil();
         }
 
@@ -9503,7 +9503,7 @@ Once opened, port is ready for =read=/=write=.
   (defn read [^number_t port]
     "char b[1] = {0};
      ssize_t bytes_read = read(port, b, 1);
-     
+
      if (bytes_read == -1)
        return nil();
      else
@@ -9576,7 +9576,7 @@ public:
     state = next;
     return value;
   }
-    
+
 };
 #+end_src
 
@@ -9610,7 +9610,7 @@ public:
 
 *** PID Control
 
-From Wikipedia: 
+From Wikipedia:
 
 #+BEGIN_QUOTE
 A PID controller calculates an 'error' value as the difference between
@@ -9710,7 +9710,7 @@ Ported from,
         setpoint = sp;
       }
     }
-    
+
     var step(ref in) {
       lock_guard guard(lock);
       input = number::to<T>(in);
@@ -9728,7 +9728,7 @@ Ported from,
           }
         }
       }
-                                
+
       /*
        ,* Integrate the errors as long as the upcoming integrator does
        ,* not exceed the minimum and maximum output thresholds
@@ -9737,13 +9737,13 @@ Ported from,
           (((total_error + error) * i) > minimum_output)) {
         total_error += error;
       }
-                                
+
       // Perform the primary PID calculation
       result = ((p * error) + (i * total_error) + (d * (error - prev_error)));
-                                
+
       // Set the current error to the previous error for the next cycle
       prev_error = error;
-                                
+
       // Make sure the final result is within bounds
       if (result > maximum_output) {
         result = maximum_output;
@@ -9753,7 +9753,7 @@ Ported from,
 
       return obj<number>(result);
     }
-    
+
   public:
     pid_controller(T kp, T ki, T kd,
                    T inMin, T inMax, T outMin, T outMax,
@@ -9786,7 +9786,7 @@ Ported from,
       if (!setpoint_fn.is_nil())
         var((object*)this).cast<pid_controller<T>>()
           ->set_setpoint(run(setpoint_fn));
-      
+
       return var((object*)this).cast<pid_controller<T>>()
         ->step(rt::first(args));
     }
@@ -9846,7 +9846,7 @@ moving average of the last K samples by setting the value of alpha to
       avrg = ((alpha * data) + ((1. - alpha) * avrg));
       return obj<number>(avrg);
     }
-    
+
   public:
 
     explicit moving_average_filter(T a) : alpha(a), avrg(0) { }
@@ -9969,7 +9969,7 @@ sensors which have contacts that "chatter" or "bounce".
     unsigned long t_debounce;
     unsigned long t_last_debounce;
     byte pin;
-    
+
     void debounce(){
       int reading = digitalRead(pin);
 
@@ -9978,7 +9978,7 @@ sensors which have contacts that "chatter" or "bounce".
         t_last_debounce = millis();
         last_state = reading;
       }
-      
+
       if ((::millis() - t_last_debounce) > t_debounce){
         if (reading == LOW)
           fsm_state = &bounce::off;
@@ -9986,7 +9986,7 @@ sensors which have contacts that "chatter" or "bounce".
           fsm_state = &bounce::on;
       }
     }
-    
+
     void init(){
       pinMode(pin, INPUT);
       fsm_state = &bounce::debounce;
@@ -10211,7 +10211,7 @@ elapsing, or "timing out".
 #+begin_src clojure
   (require '[ferret.arduino.avr :as avr])
 
-  ;; initialize 
+  ;; initialize
   (avr/wdt-enable 1000)
 
   (while true
@@ -10450,7 +10450,7 @@ be run using the [[deftest][run-all-tests]].
 ** Continuous Integration
 
 Each new commit is tested against a set of assertions.  Tests are run
-by the CI system for the following compilers/frameworks, 
+by the CI system for the following compilers/frameworks,
 
  - GCC 5
  - Clang 7.0
@@ -10500,19 +10500,19 @@ Valgrind options,
 
   - *fn*
     - Pre/Post conditions for functions.
-      - By default print error and abort. 
+      - By default print error and abort.
       - Let user define a callback function.
     - Documentation String
   - *deps.clj*
     - Support private git repositories. (HTTPS / SSH)
     - Recursively resolve dependencies of dependencies.
-  - *Escape Analysis* 
+  - *Escape Analysis*
     - Tag if an object escapes via metadata
     - Emit stack object types for escaped variables.
     - Certain forms generate functions that never escape. These can be
       generated on the stack.
     - Extend escape analysis for other types. Currently escape
-      analysis is only used for functions.    
+      analysis is only used for functions.
     - Since Ferret does whole-program compilation. Implement
       optimizations from Stalin Scheme compiler.
       - https://github.com/barak/stalin
@@ -10533,14 +10533,14 @@ Valgrind options,
 
 ** Data Structures
 
-  - *atomic* 
+  - *atomic*
     - Implement add-watch
       - https://github.com/clojure/clojure/blob/master/src/jvm/clojure/lang/ARef.java
       - https://clojuredocs.org/clojure.core/add-watch
       - https://stackoverflow.com/questions/13371123/how-do-refs-notify-its-watches-in-clojure
       - https://github.com/clojure/clojure/blob/master/src/jvm/clojure/lang/Atom.java
     - Current implementation uses =std::mutex= for
-      synchronization. Clojure uses =AtomicReference=, =std::atomic= 
+      synchronization. Clojure uses =AtomicReference=, =std::atomic=
       provides same behaviour.
       - https://github.com/clojure/clojure/blob/master/src/jvm/clojure/lang/Atom.java
       - http://www.cplusplus.com/reference/atomic/
@@ -10551,7 +10551,7 @@ Valgrind options,
      - https://foonathan.net/blog/2016/12/28/variant.html
      - http://wingolog.org/archives/2011/05/18/value-representation-in-javascript-implementations
      - https://blogs.oracle.com/jrose/fixnums-in-the-vm
-  - *Memory Pool* 
+  - *Memory Pool*
     - Allow chainable allocators. i.e Use system
       allocator until OOM then switch to pool allocator or vice versa.
       - [[https://www.youtube.com/watch?v=LIb3L4vKZ7U&t=2457s][CppCon 2015: Andrei Alexandrescu std::allocator]]
@@ -10570,7 +10570,7 @@ Valgrind options,
         determined to be born and die within that sub-stack are
         allocated from that heap. When the stack unwinds past that
         point, the entire local heap can be released in one fell swoop.
-  - C++ implementations of Clojure's persistent data structures. 
+  - C++ implementations of Clojure's persistent data structures.
     - https://github.com/mninja/persistent-data-structures
     - [[https://news.ycombinator.com/item?id=13049843][Immer: immutable and persistent data structures for C++]]
     - [[https://www.reddit.com/r/cpp/comments/8utg8u/postmodern_immutable_vector_now_boost_licensed/][Postmodern Immutable Vector]]
@@ -10721,7 +10721,7 @@ Valgrind options,
 #+name: ferret-version
 #+begin_src sh :exports results noweb: yes
   echo "`git describe --abbrev=0 --tags`-`git rev-parse --short HEAD`"
-#+end_src 
+#+end_src
 
 ** project.clj
 
@@ -10731,7 +10731,7 @@ Valgrind options,
     :url "https://ferret-lang.org/"
     :license {:name "BSD 2-Clause"
               :url "https://github.com/nakkaya/ferret/blob/master/LICENSE"}
-    
+
     :dependencies [[org.clojure/clojure "1.10.1"]
                    [org.clojure/tools.cli "0.4.2"]
                    [org.clojure/tools.logging "0.5.0"]
@@ -10758,7 +10758,7 @@ Valgrind options,
     :test-paths ["test/compiler/"]
     :filespecs [{:type :bytes :path "build.info"
                  :bytes ~(.getBytes "<<ferret-version()>>")}]
-    
+
     :main compiler.core
     :aot [compiler.core]
 
@@ -10766,7 +10766,7 @@ Valgrind options,
 
     :jar-name "interim.jar"
     :uberjar-name "ferret.jar")
-#+end_src 
+#+end_src
 
 ** src/
 *** compiler/core.clj
@@ -10806,7 +10806,7 @@ Valgrind options,
   <<core-compiler-emitter>>
   <<core-compiler-checkout-deps>>
   <<core-compiler-main>>
-#+end_src 
+#+end_src
 
 *** compiler/parser.clj
 
@@ -10819,7 +10819,7 @@ Valgrind options,
               [clojure.walk :as walk]))
 
   <<core-compiler-parser>>
-#+end_src 
+#+end_src
 
 *** compiler/io.clj
 
@@ -10832,7 +10832,7 @@ Valgrind options,
              (java.io BufferedReader InputStreamReader)))
 
   <<core-main-io>>
-#+end_src 
+#+end_src
 
 *** compiler/template.clj
 
@@ -10932,7 +10932,7 @@ Valgrind options,
        (doseq [[k# v#] vars#]
          (fill-view! view# (name k#) v#))
        (render-view view#)))
-#+end_src 
+#+end_src
 
 *** runtime/runtime.h
 
@@ -10985,7 +10985,7 @@ Valgrind options,
   namespace ferret{
     <<runtime-native-prototypes>>
   }
-#+end_src 
+#+end_src
 
 *** runtime/runtime.cpp
 
@@ -10993,14 +10993,14 @@ Valgrind options,
   namespace ferret{
     <<runtime-native-implementations>>
   }
-#+end_src 
+#+end_src
 
 *** runtime/main.cpp
 
     #+begin_src c++ :mkdirp yes :noweb yes :tangle src/runtime/main.cpp
   <<runtime-native-program-run-std-main>>
   <<runtime-native-program-arduino>>
-#+end_src 
+#+end_src
 
 *** lib/core.clj
 
@@ -11039,7 +11039,7 @@ Valgrind options,
           exit))))
 
   <<clojure-unit-tests>>
-#+end_src 
+#+end_src
 
 *** core/seqable.clj
 
@@ -11107,7 +11107,7 @@ Valgrind options,
 
 *** core/module.clj
 
-Run import tests. 
+Run import tests.
 
 #+begin_src clojure :mkdirp yes :noweb yes :tangle test/core/module.clj
   (require '[modules.module-a :as mod-a]
@@ -11157,7 +11157,7 @@ Create some dummy programs under /test/,
 
 #+begin_src clojure :mkdirp yes :tangle test/core/module_import_empty_aux_a.clj
   (require '[modules.module-a :as mod-a])
-#+end_src 
+#+end_src
 
 #+begin_src clojure :mkdirp yes :tangle test/core/module_import_empty_aux_b.clj
   (require '[modules.module-a :as mod-a])
@@ -11165,7 +11165,7 @@ Create some dummy programs under /test/,
 
   (native-declare "const int XYZ_SIZE = 123;")
   (native-declare "int xyz_arr[XYZ_SIZE];")
-#+end_src 
+#+end_src
 
 Create some dummy libs under /test/modules/,
 
@@ -11190,7 +11190,7 @@ Create some dummy libs under /test/modules/,
     (fn-throttler update-aux 1000 :second :blocking))
 
   (defn some-d-list [] {:a :b :c :d})
-#+end_src 
+#+end_src
 
 #+begin_src clojure :mkdirp yes :tangle test/core/modules/module-b.clj
   (require '[modules.module-c :as mod-c])
@@ -11212,7 +11212,7 @@ Create some dummy libs under /test/modules/,
 
   (defmacro macro-call []
     `(do (~'macro-aux)))
-#+end_src 
+#+end_src
 
 #+begin_src clojure :mkdirp yes :tangle test/core/modules/module-c.clj
   (native-header "cmath")
@@ -11222,21 +11222,21 @@ Create some dummy libs under /test/modules/,
 
   (defmacro eleven-fn []
     `(fn [] 11))
-#+end_src 
+#+end_src
 
 #+begin_src clojure :mkdirp yes :tangle test/core/modules/module-d.clj
   (native-declare "int dummy_native_fn(){ return 25; }")
-#+end_src 
+#+end_src
 
 #+begin_src clojure :mkdirp yes :tangle test/core/modules/module-e.clj
   (defn foo [] 1)
-#+end_src 
+#+end_src
 
 ** resources/
 *** tangle-docs
 
 #+begin_src emacs-lisp :mkdirp yes :tangle resources/tangle-docs :padline no
-  (progn 
+  (progn
    (require 'package)
    (package-initialize)
 
@@ -11276,7 +11276,7 @@ Create some dummy libs under /test/modules/,
    (when (locate-library "ob-shell")
      (org-babel-do-load-languages
       'org-babel-load-languages '((shell . t))))
-   
+
    (set-face-foreground 'font-lock-string-face "#990000")
    (set-face-foreground 'font-lock-keyword-face "#ff5f00")
    (set-face-foreground 'font-lock-function-name-face "#d7af00")
@@ -11284,7 +11284,7 @@ Create some dummy libs under /test/modules/,
    (set-face-foreground 'font-lock-comment-face "#008787")
 
    (find-file "ferret.org")
-   (progn 
+   (progn
      (org-html-export-as-html nil)
      (with-current-buffer "*Org HTML Export*"
        (write-region (org-no-properties (buffer-string)) nil "ferret-manual.html"))))
@@ -11301,7 +11301,7 @@ Create some dummy libs under /test/modules/,
       java="$JAVA_HOME/bin/java"
   fi
   exec "$java" $java_args -jar $MYSELF "$@"
-  exit 1 
+  exit 1
 #+end_src
 
 *** ferret-build/Dockerfile
@@ -11397,15 +11397,15 @@ RUN echo 'export PS1="\e[0;31mλ \e[m"' >> /root/.bashrc
       (toggle-read-only)
       (ansi-color-apply-on-region compilation-filter-start (point))
       (toggle-read-only))
-    
+
     (add-hook 'compilation-filter-hook 'ferret-colorize-compilation-buffer)
-    
+
     (add-hook 'ferret-mode-hook
               (lambda ()
                 (set (make-local-variable 'compile-command)
                      (let ((file (file-name-nondirectory buffer-file-name)))
                        (format "ferret -i %s" buffer-file-name)))))
-    
+
     (defun ferret-indent-cpp ()
       (interactive)
       (let ((cursor-point (point)))
